@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CricketLytics — AI Batting Analysis Dashboard</title>
+  <meta name="description" content="AI-powered cricket batting analysis dashboard. Upload your video, choose your parameters, and receive biomechanical insights in seconds." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- ── Animated Background ─────────────────────────────────────── -->
+  <div class="bg-grid" aria-hidden="true"></div>
+  <div class="bg-orb orb-1" aria-hidden="true"></div>
+  <div class="bg-orb orb-2" aria-hidden="true"></div>
+  <div class="bg-orb orb-3" aria-hidden="true"></div>
+
+  <!-- ── Header ─────────────────────────────────────────────────── -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-icon" aria-hidden="true">
+          <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="20" cy="20" r="18" stroke="url(#g1)" stroke-width="2"/>
+            <path d="M12 28 L20 10 L28 28" stroke="url(#g2)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M14.5 22 L25.5 22" stroke="url(#g2)" stroke-width="2" stroke-linecap="round"/>
+            <defs>
+              <linearGradient id="g1" x1="2" y1="2" x2="38" y2="38" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#00d4ff"/>
+                <stop offset="1" stop-color="#7c3aed"/>
+              </linearGradient>
+              <linearGradient id="g2" x1="12" y1="10" x2="28" y2="28" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#00d4ff"/>
+                <stop offset="1" stop-color="#10b981"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">CricketLytics</span>
+          <span class="brand-tag">AI Batting Analysis</span>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ── Main Content ────────────────────────────────────────────── -->
+  <main class="main-content">
+
+    <!-- Hero -->
+    <section class="hero">
+      <p class="hero-eyebrow">Powered by pose estimation &amp; rule-based AI</p>
+      <h1 class="hero-title">
+        Analyse Your <span class="gradient-text">Batting Technique</span><br/>
+        Frame by Frame
+      </h1>
+      <p class="hero-sub">
+        Upload a recorded cricket video, configure your parameters, and receive
+        biomechanical insights — joint angles, shot classification, posture coaching
+        — all in one futuristic dashboard.
+      </p>
+    </section>
+
+    <!-- ── Upload & Config Form ───────────────────────────────────── -->
+    <section class="upload-section" id="upload-section">
+      <form id="analysis-form" novalidate>
+
+        <!-- Drop zone -->
+        <div class="drop-zone" id="drop-zone" role="button" tabindex="0"
+             aria-label="Upload video file">
+          <div class="drop-zone__icon" aria-hidden="true">
+            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M32 12 L32 40" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+              <path d="M20 24 L32 12 L44 24" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M10 48 C10 44 14 40 18 40 L46 40 C50 40 54 44 54 48" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+              <path d="M10 48 L10 52 C10 54 12 56 14 56 L50 56 C52 56 54 54 54 52 L54 48" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <p class="drop-zone__label">Drag &amp; drop your video here</p>
+          <p class="drop-zone__sub">MP4 or AVI · max 500 MB</p>
+          <label class="btn-ghost" for="file-input">Browse file</label>
+          <input type="file" id="file-input" accept="video/mp4,video/avi,.avi,.mp4"
+                 class="visually-hidden" />
+          <div class="drop-zone__preview" id="file-preview" hidden>
+            <span class="file-icon">🎬</span>
+            <span id="file-name" class="file-name-text"></span>
+            <button type="button" id="remove-file" class="remove-btn" aria-label="Remove file">✕</button>
+          </div>
+        </div>
+
+        <!-- Config grid -->
+        <div class="config-grid">
+          <!-- Batting Hand -->
+          <div class="config-card" id="config-hand">
+            <label class="config-label" for="select-hand">
+              <span class="config-icon">🏏</span> Batting Hand
+            </label>
+            <div class="select-wrapper">
+              <select id="select-hand" name="hand" required>
+                <option value="">Select…</option>
+                <option value="right">Right-handed</option>
+                <option value="left">Left-handed</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Camera View -->
+          <div class="config-card" id="config-view">
+            <label class="config-label" for="select-view">
+              <span class="config-icon">📷</span> Camera View
+            </label>
+            <div class="select-wrapper">
+              <select id="select-view" name="view" required>
+                <option value="">Select…</option>
+                <option value="front">Front view</option>
+                <option value="side">Side view</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Intended Shot -->
+          <div class="config-card" id="config-shot">
+            <label class="config-label" for="select-shot">
+              <span class="config-icon">🎯</span> Intended Shot
+            </label>
+            <div class="select-wrapper">
+              <select id="select-shot" name="intended_shot">
+                <option value="auto">Auto-detect</option>
+                <option value="drive">Drive</option>
+                <option value="defensive">Forward Defensive</option>
+                <option value="pull">Pull / Hook</option>
+                <option value="sweep">Sweep</option>
+                <option value="cut">Cut Shot</option>
+                <option value="back-punch">Back Foot Punch</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <div class="submit-row">
+          <button type="submit" id="analyze-btn" class="btn-primary" disabled>
+            <span class="btn-icon">⚡</span>
+            <span id="btn-label">Analyse Video</span>
+          </button>
+          <p class="submit-hint">Analysis may take 30–120 s depending on video length</p>
+        </div>
+
+      </form>
+    </section>
+
+    <!-- ── Loading State ──────────────────────────────────────────── -->
+    <section class="loading-section" id="loading-section" hidden aria-live="polite">
+      <div class="loading-ring" aria-hidden="true">
+        <div class="ring ring-1"></div>
+        <div class="ring ring-2"></div>
+        <div class="ring ring-3"></div>
+        <div class="ring-center">
+          <svg viewBox="0 0 40 40" fill="none" width="32" height="32">
+            <circle cx="20" cy="20" r="16" stroke="url(#lg1)" stroke-width="2"/>
+            <path d="M12 26 L20 10 L28 26" stroke="url(#lg2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <defs>
+              <linearGradient id="lg1" x1="4" y1="4" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#00d4ff"/><stop offset="1" stop-color="#7c3aed"/>
+              </linearGradient>
+              <linearGradient id="lg2" x1="12" y1="10" x2="28" y2="26" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#00d4ff"/><stop offset="1" stop-color="#10b981"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+      </div>
+      <h2 class="loading-title">Analysing your video…</h2>
+      <p class="loading-sub" id="loading-msg">Initialising MediaPipe Holistic pipeline</p>
+      <div class="loading-steps">
+        <div class="step active" id="step-1">📹 Loading video frames</div>
+        <div class="step" id="step-2">🦴 Running pose estimation</div>
+        <div class="step" id="step-3">📐 Computing joint angles</div>
+        <div class="step" id="step-4">🎯 Classifying shots</div>
+        <div class="step" id="step-5">💡 Generating coaching tips</div>
+      </div>
+    </section>
+
+    <!-- ── Results Dashboard ─────────────────────────────────────── -->
+    <section class="results-section" id="results-section" hidden>
+
+      <!-- Header row -->
+      <div class="results-header">
+        <div>
+          <h2 class="results-title">Analysis Results</h2>
+          <p class="results-meta" id="results-meta">—</p>
+        </div>
+        <button class="btn-ghost" id="new-analysis-btn">↩ New Analysis</button>
+      </div>
+
+      <!-- Summary stat cards -->
+      <div class="stat-cards-row">
+        <div class="stat-card" id="stat-frames">
+          <span class="stat-value" id="val-frames">—</span>
+          <span class="stat-label">Frames Analysed</span>
+          <div class="stat-bar"><div class="stat-bar-fill" id="bar-frames"></div></div>
+        </div>
+        <div class="stat-card stat-card--accent" id="stat-shot">
+          <span class="stat-value" id="val-shot">—</span>
+          <span class="stat-label">Dominant Shot</span>
+          <div class="shot-pill" id="shot-pill"></div>
+        </div>
+
+      </div>
+
+      <!-- Main charts row -->
+      <div class="charts-row">
+
+        <!-- Annotated video feed -->
+        <div class="chart-card" id="card-video-feed">
+          <div class="chart-card__header">
+            <h3 class="chart-title">Live Analysis Feed</h3>
+            <span class="chart-badge" id="feed-badge">pose overlay</span>
+          </div>
+          <div class="video-feed-wrap">
+            <img id="analysis-feed" class="analysis-feed-img" src="" alt="Annotated video feed" hidden />
+            <div class="feed-placeholder" id="feed-placeholder">
+              <div class="feed-placeholder__icon">🎥</div>
+              <p>Annotated frames will appear here during analysis</p>
+            </div>
+            <div class="feed-controls" id="feed-controls" hidden>
+              <span class="feed-frame-counter" id="feed-frame-counter">Frame 0</span>
+              <span class="feed-shot-label" id="feed-shot-label"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Joint angle gauges -->
+        <div class="chart-card" id="card-angles">
+          <div class="chart-card__header">
+            <h3 class="chart-title">Average Joint Angles</h3>
+            <span class="chart-badge">per video analysis</span>
+          </div>
+          <div class="gauges-grid" id="gauges-grid">
+            <!-- injected by JS -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Angle timeline chart -->
+      <div class="chart-card chart-card--full" id="card-timeline">
+        <div class="chart-card__header">
+          <h3 class="chart-title">Angle Timeline</h3>
+          <span class="chart-badge">sampled every 5 frames</span>
+        </div>
+        <div class="timeline-wrap">
+          <canvas id="timeline-chart"></canvas>
+        </div>
+      </div>
+
+      <!-- Coaching tips -->
+      <div class="tips-section" id="tips-section">
+        <div class="chart-card__header">
+          <h3 class="chart-title">🏋️ Posture Coaching Tips</h3>
+          <span class="chart-badge" id="tips-mode-badge">auto mode</span>
+        </div>
+        <div class="tips-grid" id="tips-grid">
+          <!-- injected by JS -->
+        </div>
+      </div>
+
+      <!-- Pipeline overview -->
+      <div class="pipeline-section">
+        <div class="chart-card__header">
+          <h3 class="chart-title">🔬 How It Works</h3>
+        </div>
+        <div class="pipeline-steps">
+          <div class="pipe-step">
+            <div class="pipe-icon pipe-icon--blue">📹</div>
+            <div class="pipe-label">Video Input</div>
+            <div class="pipe-desc">MP4 / AVI uploaded via browser</div>
+          </div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipe-step">
+            <div class="pipe-icon pipe-icon--purple">🦴</div>
+            <div class="pipe-label">Pose Estimation</div>
+            <div class="pipe-desc">MediaPipe Holistic · 33 landmarks</div>
+          </div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipe-step">
+            <div class="pipe-icon pipe-icon--cyan">📐</div>
+            <div class="pipe-label">Angle Extraction</div>
+            <div class="pipe-desc">Knee · Elbow · Body lean</div>
+          </div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipe-step">
+            <div class="pipe-icon pipe-icon--green">🎯</div>
+            <div class="pipe-label">Shot Classifier</div>
+            <div class="pipe-desc">Rule-based · 20-frame window</div>
+          </div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipe-step">
+            <div class="pipe-icon pipe-icon--amber">💡</div>
+            <div class="pipe-label">Posture Advisor</div>
+            <div class="pipe-desc">Generic or shot-specific coaching</div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ── Error Banner ───────────────────────────────────────────── -->
+    <div class="error-banner" id="error-banner" hidden role="alert">
+      <span class="error-icon">⚠️</span>
+      <span id="error-msg">Something went wrong.</span>
+      <button class="error-close" id="error-close" aria-label="Dismiss">✕</button>
+    </div>
+
+  </main>
+
+  <!-- ── Footer ─────────────────────────────────────────────────── -->
+  <footer class="site-footer">
+    <p>CricketLytics · AI-Powered Batting Analysis</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
